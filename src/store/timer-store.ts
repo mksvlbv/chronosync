@@ -75,6 +75,7 @@ export const useTimerStore = create<TimerState>((set, get) => ({
         taskDescription: "",
       });
 
+      useToastStore.getState().add("Timer stopped — entry saved", "success");
       return entry;
     } catch {
       useToastStore.getState().add("Failed to stop timer. Check your connection.");

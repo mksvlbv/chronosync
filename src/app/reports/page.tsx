@@ -143,8 +143,21 @@ export default function ReportsPage() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-24">
-          <div className="animate-spin w-8 h-8 border-2 border-base-700 border-t-brand-500 rounded-full" />
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="lg:col-span-3 bg-base-900/40 border border-base-800 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-8">
+              <div className="skeleton h-5 w-36" />
+              <div className="flex gap-4">{[1,2,3].map(i=><div key={i} className="skeleton h-3 w-16" />)}</div>
+            </div>
+            <div className="flex items-end justify-between gap-4 h-48">
+              {[1,2,3,4,5,6,7].map(i=><div key={i} className="flex-1 flex flex-col items-center gap-2"><div className="skeleton w-full" style={{height:`${30+Math.random()*70}%`}} /><div className="skeleton h-3 w-8" /></div>)}
+            </div>
+          </div>
+          <div className="bg-base-900/40 border border-base-800 rounded-2xl p-8 flex flex-col gap-4">
+            <div className="skeleton w-12 h-12 rounded-xl" />
+            <div className="skeleton h-4 w-24" />
+            <div className="skeleton h-10 w-28" />
+          </div>
         </div>
       ) : report ? (
         <>

@@ -98,8 +98,20 @@ export function TimeEntryList() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-16 text-base-500">
-        <div className="animate-spin w-6 h-6 border-2 border-base-700 border-t-brand-500 rounded-full" />
+      <div className="w-full max-w-4xl flex flex-col gap-6">
+        <div className="flex items-end justify-between px-2">
+          <div><div className="skeleton h-7 w-24 mb-2" /><div className="skeleton h-4 w-40" /></div>
+          <div className="text-right"><div className="skeleton h-4 w-28 mb-2" /><div className="skeleton h-6 w-20 ml-auto" /></div>
+        </div>
+        <div className="flex flex-col">
+          <div className="py-3 px-4 bg-base-900/40 border-y border-base-800/50"><div className="skeleton h-5 w-40" /></div>
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center justify-between p-4 border-b border-base-800/30">
+              <div className="flex items-center gap-8 flex-1"><div className="skeleton h-4 w-36" /><div className="skeleton h-4 w-48" /></div>
+              <div className="skeleton h-5 w-20" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

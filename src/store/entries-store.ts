@@ -5,6 +5,7 @@ import {
   deleteTimeEntry,
   type TimeEntry,
 } from "@/lib/api/time-entries";
+import { useToastStore } from "@/components/toast";
 
 interface EntriesState {
   entries: TimeEntry[];
@@ -46,11 +47,13 @@ export const useEntriesStore = create<EntriesState>((set, get) => ({
   update: async (id, data) => {
     await updateTimeEntry(id, data);
     await get().refresh();
+    useToastStore.getState().add("Entry updated", "success");
   },
 
   remove: async (id) => {
     await deleteTimeEntry(id);
     set({ entries: get().entries.filter((e) => e.id !== id) });
+    useToastStore.getState().add("Entry deleted", "success");
   },
 
   refresh: async () => {

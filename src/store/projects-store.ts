@@ -6,6 +6,7 @@ import {
   deleteProject,
   type Project,
 } from "@/lib/api/projects";
+import { useToastStore } from "@/components/toast";
 
 interface ProjectsState {
   projects: Project[];
@@ -35,16 +36,20 @@ export const useProjectsStore = create<ProjectsState>((set, get) => ({
   add: async (data) => {
     const project = await createProject(data);
     await get().load();
+    useToastStore.getState().add(`Project "${data.name}" created`, "success");
     return project as unknown as Project;
   },
 
   update: async (id, data) => {
     await updateProject(id, data);
     await get().load();
+    useToastStore.getState().add("Project updated", "success");
   },
 
   remove: async (id) => {
+    const name = get().projects.find(p => p.id === id)?.name;
     await deleteProject(id);
     set({ projects: get().projects.filter((p) => p.id !== id) });
+    useToastStore.getState().add(`Project "${name}" deleted`, "success");
   },
 }));

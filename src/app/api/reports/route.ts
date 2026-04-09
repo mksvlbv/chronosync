@@ -44,22 +44,39 @@ export async function GET(req: NextRequest) {
     byProject[e.projectId].totalSeconds += e.duration || 0;
   });
 
-  const days = eachDayOfInterval({ start, end });
-  const chartData = days.map((day) => {
-    const dayEntries = entries.filter(
-      (e) => format(e.startTime, "yyyy-MM-dd") === format(day, "yyyy-MM-dd")
-    );
-    const byProjectDay: Record<string, number> = {};
-    dayEntries.forEach((e) => {
-      byProjectDay[e.project.name] = (byProjectDay[e.project.name] || 0) + (e.duration || 0);
+  let chartData;
+  if (period === "day") {
+    chartData = Array.from({ length: 24 }, (_, hour) => {
+      const hourEntries = entries.filter((e) => new Date(e.startTime).getHours() === hour);
+      const byProjectHour: Record<string, number> = {};
+      hourEntries.forEach((e) => {
+        byProjectHour[e.project.name] = (byProjectHour[e.project.name] || 0) + (e.duration || 0);
+      });
+      return {
+        date: `${hour.toString().padStart(2, "0")}:00`,
+        fullDate: format(start, "yyyy-MM-dd"),
+        ...byProjectHour,
+        total: hourEntries.reduce((acc, e) => acc + (e.duration || 0), 0),
+      };
     });
-    return {
-      date: format(day, "EEE"),
-      fullDate: format(day, "yyyy-MM-dd"),
-      ...byProjectDay,
-      total: dayEntries.reduce((acc, e) => acc + (e.duration || 0), 0),
-    };
-  });
+  } else {
+    const days = eachDayOfInterval({ start, end });
+    chartData = days.map((day) => {
+      const dayEntries = entries.filter(
+        (e) => format(e.startTime, "yyyy-MM-dd") === format(day, "yyyy-MM-dd")
+      );
+      const byProjectDay: Record<string, number> = {};
+      dayEntries.forEach((e) => {
+        byProjectDay[e.project.name] = (byProjectDay[e.project.name] || 0) + (e.duration || 0);
+      });
+      return {
+        date: format(day, "EEE"),
+        fullDate: format(day, "yyyy-MM-dd"),
+        ...byProjectDay,
+        total: dayEntries.reduce((acc, e) => acc + (e.duration || 0), 0),
+      };
+    });
+  }
 
   const daysWithData = chartData.filter((d) => d.total > 0).length;
 

@@ -171,8 +171,16 @@ export default function ProjectsPage() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-24">
-          <div className="animate-spin w-8 h-8 border-2 border-base-700 border-t-brand-500 rounded-full" />
+        <div className="flex flex-col gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex items-center justify-between p-4 bg-base-900/40 border border-base-800/80 rounded-xl">
+              <div className="flex items-center gap-4">
+                <div className="skeleton w-4 h-4 rounded-full" />
+                <div className="skeleton h-5 w-40" />
+              </div>
+              <div className="skeleton h-5 w-20" />
+            </div>
+          ))}
         </div>
       ) : projects.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 gap-4">
