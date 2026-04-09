@@ -4,7 +4,7 @@ A production-ready time-tracking application built with Next.js 14, Prisma ORM, 
 
 ## Live Demo
 
-🔗 [chronosync.vercel.app](https://chronosync.vercel.app) *(deployment pending)*
+🔗 [chronosync-nu.vercel.app](https://chronosync-nu.vercel.app)
 
 ## Features
 
