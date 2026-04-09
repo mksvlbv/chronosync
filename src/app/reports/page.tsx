@@ -169,13 +169,13 @@ export default function ReportsPage() {
         <>
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div className="lg:col-span-3 bg-base-900/40 border border-base-800 rounded-2xl p-6 backdrop-blur-sm">
-              <div className="flex items-center justify-between mb-8">
-                <h3 className="font-semibold text-white">Time Distribution</h3>
-                <div className="flex items-center gap-4 flex-wrap">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
+                <h3 className="font-semibold text-white flex-shrink-0">Time Distribution</h3>
+                <div className="flex items-center gap-x-4 gap-y-1 flex-wrap">
                   {report.byProject.map((p) => (
                     <div key={p.projectId} className="flex items-center gap-2 text-xs text-base-400">
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
-                      {p.name}
+                      <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
+                      <span className="truncate">{p.name}</span>
                     </div>
                   ))}
                 </div>
