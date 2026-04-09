@@ -102,6 +102,8 @@ This document records every significant AI prompt used in developing ChronoSync,
 - Enter/Escape keyboard handling in project modal
 - Phosphor Icons in mobile navigation
 - Toast notification system for API error feedback
+- Inline time editing (click time range → edit in HH:MM format with auto-recalculated duration)
+- Project reassignment dropdown on entries (click project dot → pick new project from list)
 **Reasoning:** Timer persistence is critical for a time-tracker — losing a running timer on page refresh is a data-integrity issue. The `/api/time-entries/running` endpoint queries for entries without `endTime`, enabling the client to restore state from the database.
 
 ### Prompt 13 — Design Fidelity Audit (Round 2)

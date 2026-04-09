@@ -1,23 +1,75 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useEntriesStore } from "@/store/entries-store";
 import { useTimerStore } from "@/store/timer-store";
+import { useProjectsStore } from "@/store/projects-store";
 import { formatDuration, formatTime, formatDate } from "@/lib/utils";
 import type { TimeEntry } from "@/lib/api/time-entries";
-import { PencilSimple, Trash, Play, ArrowRight, Clock } from "@phosphor-icons/react";
+import { PencilSimple, Trash, Play, ArrowRight, Clock, CaretDown } from "@phosphor-icons/react";
+
+function toHHMM(isoString: string) {
+  const d = new Date(isoString);
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+function applyHHMM(isoString: string, hhmm: string): string {
+  const [hStr, mStr] = hhmm.split(":");
+  const h = parseInt(hStr, 10);
+  const m = parseInt(mStr, 10);
+  if (isNaN(h) || isNaN(m) || h < 0 || h > 23 || m < 0 || m > 59) return isoString;
+  const d = new Date(isoString);
+  d.setHours(h, m, 0, 0);
+  return d.toISOString();
+}
 
 function EntryRow({ entry }: { entry: TimeEntry }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(entry.description);
+  const [editStart, setEditStart] = useState(() => toHHMM(entry.startTime));
+  const [editEnd, setEditEnd] = useState(() => entry.endTime ? toHHMM(entry.endTime) : "");
+  const [isEditingTime, setIsEditingTime] = useState(false);
+  const [showProjectPicker, setShowProjectPicker] = useState(false);
+  const projectPickerRef = useRef<HTMLDivElement>(null);
   const { update, remove } = useEntriesStore();
   const { continueEntry } = useTimerStore();
+  const { projects } = useProjectsStore();
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (projectPickerRef.current && !projectPickerRef.current.contains(e.target as Node)) {
+        setShowProjectPicker(false);
+      }
+    }
+    if (showProjectPicker) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showProjectPicker]);
 
   const handleSave = async () => {
     if (editValue.trim() && editValue !== entry.description) {
       await update(entry.id, { description: editValue.trim() });
     }
     setIsEditing(false);
+  };
+
+  const handleTimeSave = async () => {
+    const newStart = applyHHMM(entry.startTime, editStart);
+    const newEnd = entry.endTime ? applyHHMM(entry.endTime, editEnd) : undefined;
+    const changed = newStart !== entry.startTime || (newEnd && newEnd !== entry.endTime);
+    if (changed) {
+      await update(entry.id, {
+        startTime: newStart,
+        ...(newEnd && { endTime: newEnd }),
+      });
+    }
+    setIsEditingTime(false);
+  };
+
+  const handleProjectChange = async (projectId: string) => {
+    if (projectId !== entry.projectId) {
+      await update(entry.id, { projectId });
+    }
+    setShowProjectPicker(false);
   };
 
   const handleDelete = async () => {
@@ -29,10 +81,67 @@ function EntryRow({ entry }: { entry: TimeEntry }) {
   return (
     <div className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 border-b border-base-800/30 hover:bg-base-800/30 transition-colors relative gap-4 sm:gap-0">
       <div className="flex items-start sm:items-center gap-4 sm:gap-8 flex-1">
-        <div className="text-sm text-base-500 font-mono w-auto sm:w-36 flex-shrink-0 flex items-center gap-2 group-hover:text-base-400 transition-colors">
-          {formatTime(new Date(entry.startTime))}
-          <ArrowRight size={12} />
-          {entry.endTime ? formatTime(new Date(entry.endTime)) : "..."}
+        {isEditingTime ? (
+          <div className="flex items-center gap-1 flex-shrink-0">
+            <input
+              type="text"
+              value={editStart}
+              onChange={(e) => setEditStart(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleTimeSave()}
+              placeholder="HH:MM"
+              className="w-16 bg-base-950 border border-base-700 rounded px-1.5 py-0.5 text-sm font-mono text-white text-center focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/50"
+              autoFocus
+            />
+            <ArrowRight size={12} className="text-base-500" />
+            <input
+              type="text"
+              value={editEnd}
+              onChange={(e) => setEditEnd(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleTimeSave()}
+              placeholder="HH:MM"
+              disabled={!entry.endTime}
+              className="w-16 bg-base-950 border border-base-700 rounded px-1.5 py-0.5 text-sm font-mono text-white text-center focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/50 disabled:opacity-40"
+            />
+            <button onClick={handleTimeSave} className="ml-1 px-2 py-0.5 text-xs bg-brand-500/20 text-brand-400 rounded hover:bg-brand-500/30 transition-colors">OK</button>
+            <button onClick={() => { setIsEditingTime(false); setEditStart(toHHMM(entry.startTime)); setEditEnd(entry.endTime ? toHHMM(entry.endTime) : ""); }} className="px-2 py-0.5 text-xs text-base-400 hover:text-white transition-colors">✕</button>
+          </div>
+        ) : (
+          <div
+            className="text-sm text-base-500 font-mono w-auto sm:w-36 flex-shrink-0 flex items-center gap-2 group-hover:text-base-400 transition-colors cursor-pointer hover:text-brand-400"
+            onClick={() => setIsEditingTime(true)}
+            title="Click to edit time"
+          >
+            {formatTime(new Date(entry.startTime))}
+            <ArrowRight size={12} />
+            {entry.endTime ? formatTime(new Date(entry.endTime)) : "..."}
+          </div>
+        )}
+
+        <div className="relative" ref={projectPickerRef}>
+          <button
+            onClick={() => setShowProjectPicker(!showProjectPicker)}
+            className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-base-800 transition-colors group/proj"
+            title="Change project"
+          >
+            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: entry.project.color }} />
+            <CaretDown size={10} className="text-base-500 opacity-0 group-hover/proj:opacity-100 transition-opacity" />
+          </button>
+          {showProjectPicker && (
+            <div className="absolute top-full left-0 mt-1 bg-base-900 border border-base-700 rounded-lg shadow-xl z-30 py-1 min-w-[180px]">
+              {projects.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => handleProjectChange(p.id)}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm text-left hover:bg-base-800 transition-colors ${
+                    p.id === entry.projectId ? "text-white bg-base-800/50" : "text-base-300"
+                  }`}
+                >
+                  <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
+                  {p.name}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex-1 min-w-0 flex items-center gap-2">
