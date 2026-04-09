@@ -10,43 +10,49 @@ const PERIODS = ["Day", "Week", "Month"] as const;
 
 function BarChart({ data, projects }: { data: ReportData["chartData"]; projects: ReportData["byProject"] }) {
   const maxTotal = Math.max(...data.map((d) => (d as Record<string, unknown>).total as number || 0), 1);
+  const manyBars = data.length > 10;
 
   return (
-    <div className="relative h-64 flex items-end justify-between gap-2 sm:gap-4 px-2">
-      <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-        {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="border-b border-base-800/50 w-full h-0" />
-        ))}
-      </div>
+    <div className={manyBars ? "overflow-x-auto -mx-2 px-2" : ""}>
+      <div
+        className="relative h-64 flex items-end gap-1 sm:gap-2 px-1"
+        style={manyBars ? { minWidth: `${data.length * 40}px` } : undefined}
+      >
+        <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="border-b border-base-800/50 w-full h-0" />
+          ))}
+        </div>
 
-      {data.map((day, i) => {
-        const dayData = day as Record<string, unknown>;
-        const total = (dayData.total as number) || 0;
-        return (
-          <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
-            <div className="w-full max-w-[40px] flex flex-col-reverse rounded-t-lg overflow-hidden">
-              {projects.map((project) => {
-                const val = (dayData[project.name] as number) || 0;
-                if (val === 0) return null;
-                const height = (val / maxTotal) * 240;
-                return (
-                  <div
-                    key={project.projectId}
-                    className="transition-all hover:brightness-110"
-                    style={{
-                      height: `${Math.max(height, 4)}px`,
-                      background: `linear-gradient(to top, ${project.color}cc, ${project.color})`,
-                    }}
-                    title={`${project.name}: ${formatDurationShort(val)}`}
-                  />
-                );
-              })}
-              {total === 0 && <div className="h-1 bg-base-800 rounded" />}
+        {data.map((day, i) => {
+          const dayData = day as Record<string, unknown>;
+          const total = (dayData.total as number) || 0;
+          return (
+            <div key={i} className="flex-1 flex flex-col items-center gap-1 group" style={manyBars ? { minWidth: 32 } : undefined}>
+              <div className="w-full max-w-[32px] flex flex-col-reverse rounded-t-lg overflow-hidden">
+                {projects.map((project) => {
+                  const val = (dayData[project.name] as number) || 0;
+                  if (val === 0) return null;
+                  const height = (val / maxTotal) * 220;
+                  return (
+                    <div
+                      key={project.projectId}
+                      className="transition-all hover:brightness-110"
+                      style={{
+                        height: `${Math.max(height, 4)}px`,
+                        background: `linear-gradient(to top, ${project.color}cc, ${project.color})`,
+                      }}
+                      title={`${project.name}: ${formatDurationShort(val)}`}
+                    />
+                  );
+                })}
+                {total === 0 && <div className="h-1 bg-base-800 rounded" />}
+              </div>
+              <span className="text-[10px] text-base-500 whitespace-nowrap">{dayData.date as string}</span>
             </div>
-            <span className="text-xs text-base-500">{dayData.date as string}</span>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }

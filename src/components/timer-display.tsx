@@ -44,7 +44,7 @@ export function TimerDisplay() {
         </h1>
       </div>
 
-      <div className="mt-16 sm:mt-24 relative z-20">
+      <div className="mt-16 sm:mt-24 relative z-10">
         <button
           onClick={handleToggle}
           disabled={!selectedProjectId && !isRunning}
