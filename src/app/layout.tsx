@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrains.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-base-950 text-base-200">
+      <body className="min-h-full flex flex-col bg-base-950 text-base-200 overflow-x-hidden">
         <Header />
         <KeyboardShortcuts />
         <main className="flex-1 flex flex-col">{children}</main>
