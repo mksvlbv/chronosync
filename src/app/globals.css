@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+
+  --color-base-950: #09090b;
+  --color-base-900: #18181b;
+  --color-base-800: #27272a;
+  --color-base-700: #3f3f46;
+  --color-base-600: #52525b;
+  --color-base-500: #71717a;
+  --color-base-400: #a1a1aa;
+  --color-base-300: #d4d4d8;
+  --color-base-200: #e4e4eb;
+  --color-base-100: #f4f4f5;
+
+  --color-brand-600: #059669;
+  --color-brand-500: #10b981;
+  --color-brand-400: #34d399;
+  --color-brand-300: #6ee7b7;
+
+  --color-danger-600: #dc2626;
+  --color-danger-500: #ef4444;
+  --color-danger-400: #f87171;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-base-950);
+  color: var(--color-base-200);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background-color: rgb(16 185 129 / 0.3);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-base-800);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-base-700);
+}
+
+@keyframes timer-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-timer-pulse {
+  animation: timer-pulse 2s ease-in-out infinite;
+}
