@@ -10,7 +10,7 @@ This document records every significant AI prompt used in developing ChronoSync,
 
 ### Prompt 1 — Project Initialization
 **Context:** Starting a greenfield time-tracker application.
-**Prompt:** Initialize a Next.js 14 project with TypeScript, TailwindCSS, Prisma ORM, Zustand, and Supabase Postgres. Set up the project structure with four architectural layers: UI components, Zustand stores, API client, and Prisma data layer.
+**Prompt:** Initialize a Next.js 16 project with TypeScript, TailwindCSS, Prisma ORM, Zustand, and Supabase Postgres. Set up the project structure with four architectural layers: UI components, Zustand stores, API client, and Prisma data layer.
 **Outcome:** Created `chronosync` project with all dependencies installed. Configured TailwindCSS v4 with custom design tokens (dark theme, brand colors, typography scale). Established the `src/` directory structure.
 **Reasoning:** Four-layer architecture ensures separation of concerns: UI components are decoupled from data fetching, Zustand manages client state independently, API client abstracts fetch logic, and Prisma handles database operations through type-safe queries.
 
@@ -106,9 +106,9 @@ This document records every significant AI prompt used in developing ChronoSync,
 
 ### Prompt 13 — Design Fidelity Audit (Round 2)
 **Context:** Pixel-level comparison against all 6 Variant AI HTML reference files.
-**Prompt:** Compare every component against the design references. Replace all inline SVGs with Phosphor Icons (as specified in the ТЗ), convert Projects page from card grid to list-row layout matching the reference, add "Recent:" task chips below the timer input.
+**Prompt:** Compare every component against the design references. Replace all inline SVGs with Phosphor Icons (as specified in the technical specification), convert Projects page from card grid to list-row layout matching the reference, add "Recent:" task chips below the timer input.
 **Outcome:** Replaced all inline SVGs across 6 component files with `@phosphor-icons/react` components (ListPlus, CaretDown, Play, Stop, PencilSimple, Trash, ArrowRight, Clock, Plus, X, FolderDashed, DownloadSimple, CaretLeft, CaretRight, ClockCountdown). Rewrote Projects page layout from 3-column card grid to full-width list rows. Added "Recent:" quick-pick chips. Fixed button texts ("Start", "Add Project").
-**Reasoning:** The ТЗ explicitly requires `@phosphor-icons/react`. Inline SVGs, while functional, break consistency with the design system and add unnecessary bundle weight. The list-row layout for projects matches the reference exactly and provides better information density on desktop.
+**Reasoning:** The technical specification explicitly requires `@phosphor-icons/react`. Inline SVGs, while functional, break consistency with the design system and add unnecessary bundle weight. The list-row layout for projects matches the reference exactly and provides better information density on desktop.
 
 ### Prompt 14 — Polish Pass (Skeletons, Toasts, Reports)
 **Context:** Addressing four P3 cosmetic observations from the audit.
@@ -122,14 +122,14 @@ This document records every significant AI prompt used in developing ChronoSync,
 **Outcome:** Removed `recharts` (37 packages), `.env.example` committed with `DATABASE_URL` and `DIRECT_URL` placeholders, `@types/pg` confirmed in devDependencies.
 **Reasoning:** Unused dependencies increase install time and bundle size. `.env.example` is essential for developer onboarding — without it, cloning the repo requires guessing environment variable names.
 
-### Prompt 16 — UI Bug Fixes (Responsive)
-**Context:** User-reported visual bugs on mobile: overlapping chart elements on Reports Day/Month, Start button overlapping input dropdown, missing 3rd bottom nav item, cramped chart legend, tight spacing between timer and entries.
-**Prompt:** Fix overlapping elements on Reports page (Day/Month chart overflow), dropdown z-index vs Start button, mobile bottom nav showing only 2 of 3 items, chart legend/title overlap on mobile, delete confirmation layout on narrow screens, and spacing between timer section and entries list.
+### Prompt 16 — Responsive Hardening
+**Context:** QA pass on mobile devices (Galaxy S20 Ultra, 412px) identified responsive layout issues: overlapping chart elements on Reports Day/Month, z-index conflict between Start button and input dropdown, bottom nav truncation, cramped chart legend, and tight spacing between sections.
+**Prompt:** Fix all identified responsive issues: Reports chart overflow, dropdown z-index layering, mobile bottom nav visibility, chart legend/title overlap, delete confirmation layout on narrow screens, and spacing between timer section and entries list.
 **Outcome:** Chart scrolls horizontally when >10 bars. Start button z-index lowered from z-20 to z-10. Added `overflow-x-hidden` on body and `overflow-x-clip` on timer page to prevent 800px glow element from creating horizontal scroll. Reports summary card becomes compact horizontal bar on mobile. Legend uses inline scrollable row. Delete confirmation stacks vertically on mobile. Divider margin increased.
 **Reasoning:** The 800px background glow element caused document-level horizontal overflow on mobile viewports, pushing the fixed bottom nav beyond the visible area. Each fix was minimal and scoped to the specific viewport breakpoint causing the issue.
 
-### Prompt 17 — Playwright E2E Audit
-**Context:** Manual bug discovery was unreliable. Automated testing needed to catch visual and functional regressions across all viewports.
+### Prompt 17 — Automated Regression Testing
+**Context:** To ensure ongoing quality and prevent regressions, automated E2E testing was added covering visual and functional aspects across all viewports.
 **Prompt:** Install Playwright, write comprehensive visual screenshot tests (every page × 3 viewports × all states) and functional E2E tests (timer lifecycle, project CRUD, entry editing, reports navigation, CSV export, keyboard shortcuts, responsive layout checks). Run all tests, review 46 screenshots, fix issues found.
 **Outcome:** 31 Playwright tests, all passing. 46 screenshots captured across Desktop (1440px), Tablet (768px), and Mobile (412px). Automated checks for: horizontal overflow, bottom nav visibility, dropdown z-index positioning, element spacing, title/legend overlap. Additional fixes: skeleton hydration (deterministic heights), fragile dynamic import, button text consistency ("Stop Tracker" → "Stop"), suggestions dropdown fallback to recent tasks.
 **Reasoning:** Automated visual regression testing catches layout issues that code review alone misses. Screenshot-based verification across three breakpoints ensures responsive correctness. Functional tests validate the full user journey and prevent regressions in CRUD operations.

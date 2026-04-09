@@ -1,6 +1,6 @@
 # ChronoSync — Time Tracker
 
-A production-ready time-tracking application built with Next.js 14, Prisma ORM, Supabase Postgres, and Zustand. Designed from Variant AI references with a premium dark-theme UI.
+A production-ready time-tracking application built with Next.js 16, Prisma ORM, Supabase Postgres, and Zustand. Designed from Variant AI references with a premium dark-theme UI.
 
 ## Live Demo
 
