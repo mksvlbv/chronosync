@@ -109,3 +109,15 @@ This document records every significant AI prompt used in developing ChronoSync,
 **Prompt:** Compare every component against the design references. Replace all inline SVGs with Phosphor Icons (as specified in the ТЗ), convert Projects page from card grid to list-row layout matching the reference, add "Recent:" task chips below the timer input.
 **Outcome:** Replaced all inline SVGs across 6 component files with `@phosphor-icons/react` components (ListPlus, CaretDown, Play, Stop, PencilSimple, Trash, ArrowRight, Clock, Plus, X, FolderDashed, DownloadSimple, CaretLeft, CaretRight, ClockCountdown). Rewrote Projects page layout from 3-column card grid to full-width list rows. Added "Recent:" quick-pick chips. Fixed button texts ("Start", "Add Project").
 **Reasoning:** The ТЗ explicitly requires `@phosphor-icons/react`. Inline SVGs, while functional, break consistency with the design system and add unnecessary bundle weight. The list-row layout for projects matches the reference exactly and provides better information density on desktop.
+
+### Prompt 14 — Polish Pass (Skeletons, Toasts, Reports)
+**Context:** Addressing four P3 cosmetic observations from the audit.
+**Prompt:** Replace loading spinners with skeleton shimmer loaders on all pages. Add success toast notifications for all CRUD actions (create/edit/delete project, edit/delete entry, stop timer). Change Reports "Day" mode to show 24-hour breakdown instead of a single bar. Show em-dash for zero-duration projects.
+**Outcome:** Added `.skeleton` CSS class with shimmer animation. Skeleton loaders replace spinners on Dashboard, Projects, and Reports pages. Success toasts added to all three Zustand stores. Reports API generates hourly chart data when `period=day`. `formatDurationShort(0)` returns "—".
+**Reasoning:** Skeleton loaders provide better perceived performance than spinners by hinting at content shape. Success toasts close the feedback loop — users need confirmation that actions completed, not just absence of errors. Hourly breakdown in Day mode makes the chart useful for single-day analysis.
+
+### Prompt 15 — Final Cleanup
+**Context:** Final audit sweep before submission.
+**Prompt:** Remove unused `recharts` dependency (200KB dead weight). Create `.env.example` for repository onboarding. Un-ignore it in `.gitignore`. Verify `@types/pg` is present in devDependencies.
+**Outcome:** Removed `recharts` (37 packages), `.env.example` committed with `DATABASE_URL` and `DIRECT_URL` placeholders, `@types/pg` confirmed in devDependencies.
+**Reasoning:** Unused dependencies increase install time and bundle size. `.env.example` is essential for developer onboarding — without it, cloning the repo requires guessing environment variable names.
