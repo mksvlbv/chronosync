@@ -7,7 +7,7 @@ import { fetchTaskNames, type TaskName } from "@/lib/api/task-names";
 import { cn } from "@/lib/utils";
 
 export function TimerInput() {
-  const { taskDescription, setTaskDescription, selectedProjectId, setSelectedProjectId } = useTimerStore();
+  const { taskDescription, setTaskDescription, selectedProjectId, setSelectedProjectId, isRunning } = useTimerStore();
   const { projects } = useProjectsStore();
   const [showProjectDropdown, setShowProjectDropdown] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -61,7 +61,8 @@ export function TimerInput() {
           onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
           placeholder="What are you working on?"
-          className="w-full bg-transparent border-none outline-none text-xl lg:text-2xl text-white placeholder-base-400/70 font-light"
+          disabled={isRunning}
+          className="w-full bg-transparent border-none outline-none text-xl lg:text-2xl text-white placeholder-base-400/70 font-light disabled:opacity-60 disabled:cursor-not-allowed"
         />
 
         {showSuggestions && suggestions.length > 0 && (
@@ -90,8 +91,9 @@ export function TimerInput() {
 
       <div className="relative" ref={dropdownRef}>
         <button
-          onClick={() => setShowProjectDropdown(!showProjectDropdown)}
-          className="w-full sm:w-auto flex items-center justify-between gap-3 px-4 py-3 sm:py-2 rounded-xl hover:bg-base-800/80 transition-colors border border-transparent hover:border-base-700 whitespace-nowrap"
+          onClick={() => !isRunning && setShowProjectDropdown(!showProjectDropdown)}
+          disabled={isRunning}
+          className="w-full sm:w-auto flex items-center justify-between gap-3 px-4 py-3 sm:py-2 rounded-xl hover:bg-base-800/80 transition-colors border border-transparent hover:border-base-700 whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <div className="flex items-center gap-2">
             <span

@@ -29,6 +29,15 @@ function ProjectModal({
     }
   }, [open, initial]);
 
+  useEffect(() => {
+    if (!open) return;
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [open, onClose]);
+
   if (!open) return null;
 
   const handleSubmit = async () => {
@@ -64,6 +73,7 @@ function ProjectModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Website Redesign"
+              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
               className="w-full bg-base-950 border border-base-700 rounded-lg px-4 py-2.5 text-white placeholder-base-400/50 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/50 transition-all"
               autoFocus
             />
@@ -78,6 +88,7 @@ function ProjectModal({
               value={client}
               onChange={(e) => setClient(e.target.value)}
               placeholder="e.g. Acme Corp"
+              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
               className="w-full bg-base-950 border border-base-700 rounded-lg px-4 py-2.5 text-white placeholder-base-400/50 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/50 transition-all"
             />
           </div>
@@ -147,7 +158,7 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="flex-1 w-full max-w-5xl mx-auto px-6 py-12">
+    <div className="flex-1 w-full max-w-5xl mx-auto px-6 py-12 pb-24 md:pb-12">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-semibold text-white tracking-tight">Projects</h1>
         <button
@@ -199,7 +210,7 @@ export default function ProjectsPage() {
                   />
                   <h3 className="font-semibold text-white text-lg">{project.name}</h3>
                 </div>
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => { setEditProject(project); setModalOpen(true); }}
                     className="p-1.5 text-base-400 hover:text-white hover:bg-base-800 rounded-lg transition-colors"

@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { createTimeEntry, stopTimeEntry, type TimeEntry } from "@/lib/api/time-entries";
+import { createTimeEntry, stopTimeEntry, fetchRunningEntry, type TimeEntry } from "@/lib/api/time-entries";
+import { useToastStore } from "@/components/toast";
 
 interface TimerState {
   isRunning: boolean;
@@ -16,6 +17,7 @@ interface TimerState {
   stop: () => Promise<TimeEntry | null>;
   tick: () => void;
   continueEntry: (entry: TimeEntry) => Promise<void>;
+  restore: () => Promise<void>;
   reset: () => void;
 }
 
@@ -35,20 +37,24 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     const { taskDescription, selectedProjectId } = get();
     if (!selectedProjectId) return;
 
-    const entry = await createTimeEntry({
-      description: taskDescription || "Untitled task",
-      projectId: selectedProjectId,
-    });
+    try {
+      const entry = await createTimeEntry({
+        description: taskDescription || "Untitled task",
+        projectId: selectedProjectId,
+      });
 
-    const intervalId = setInterval(() => get().tick(), 1000);
+      const intervalId = setInterval(() => get().tick(), 1000);
 
-    set({
-      isRunning: true,
-      seconds: 0,
-      activeEntryId: entry.id,
-      activeEntry: entry,
-      intervalId,
-    });
+      set({
+        isRunning: true,
+        seconds: 0,
+        activeEntryId: entry.id,
+        activeEntry: entry,
+        intervalId,
+      });
+    } catch {
+      useToastStore.getState().add("Failed to start timer. Check your connection.");
+    }
   },
 
   stop: async () => {
@@ -57,18 +63,23 @@ export const useTimerStore = create<TimerState>((set, get) => ({
 
     if (intervalId) clearInterval(intervalId);
 
-    const entry = await stopTimeEntry(activeEntryId);
+    try {
+      const entry = await stopTimeEntry(activeEntryId);
 
-    set({
-      isRunning: false,
-      seconds: 0,
-      activeEntryId: null,
-      activeEntry: null,
-      intervalId: null,
-      taskDescription: "",
-    });
+      set({
+        isRunning: false,
+        seconds: 0,
+        activeEntryId: null,
+        activeEntry: null,
+        intervalId: null,
+        taskDescription: "",
+      });
 
-    return entry;
+      return entry;
+    } catch {
+      useToastStore.getState().add("Failed to stop timer. Check your connection.");
+      return null;
+    }
   },
 
   tick: () => set((s) => ({ seconds: s.seconds + 1 })),
@@ -83,6 +94,27 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     });
 
     await get().start();
+  },
+
+  restore: async () => {
+    try {
+      const entry = await fetchRunningEntry();
+      if (entry && !entry.endTime) {
+        const elapsed = Math.floor((Date.now() - new Date(entry.startTime).getTime()) / 1000);
+        const intervalId = setInterval(() => get().tick(), 1000);
+        set({
+          isRunning: true,
+          seconds: elapsed,
+          taskDescription: entry.description,
+          selectedProjectId: entry.projectId,
+          activeEntryId: entry.id,
+          activeEntry: entry,
+          intervalId,
+        });
+      }
+    } catch {
+      // silently fail — no running entry
+    }
   },
 
   reset: () => {

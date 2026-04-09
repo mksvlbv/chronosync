@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useProjectsStore } from "@/store/projects-store";
 import { useEntriesStore } from "@/store/entries-store";
+import { useTimerStore } from "@/store/timer-store";
 import { TimerInput } from "@/components/timer-input";
 import { TimerDisplay } from "@/components/timer-display";
 import { TimeEntryList } from "@/components/time-entry-list";
@@ -10,11 +11,13 @@ import { TimeEntryList } from "@/components/time-entry-list";
 export default function Home() {
   const { load: loadProjects } = useProjectsStore();
   const { loadToday } = useEntriesStore();
+  const { restore } = useTimerStore();
 
   useEffect(() => {
     loadProjects();
     loadToday();
-  }, [loadProjects, loadToday]);
+    restore();
+  }, [loadProjects, loadToday, restore]);
 
   return (
     <div className="flex-1 flex flex-col items-center w-full max-w-5xl mx-auto px-6 py-12 relative z-10">

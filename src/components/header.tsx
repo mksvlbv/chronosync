@@ -5,11 +5,12 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useTimerStore } from "@/store/timer-store";
 import { formatDuration } from "@/lib/utils";
+import { Timer, Folder, ChartBar, Clock } from "@phosphor-icons/react";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Timer" },
-  { href: "/projects", label: "Projects" },
-  { href: "/reports", label: "Reports" },
+  { href: "/", label: "Timer", icon: Timer },
+  { href: "/projects", label: "Projects", icon: Folder },
+  { href: "/reports", label: "Reports", icon: ChartBar },
 ];
 
 export function Header() {
@@ -22,9 +23,7 @@ export function Header() {
       <div className="flex items-center gap-8">
         <Link href="/" className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-base-700 to-base-900 border border-base-700 flex items-center justify-center shadow-lg">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-brand-400">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" fill="currentColor"/>
-            </svg>
+            <Clock size={16} weight="bold" className="text-brand-400" />
           </div>
           <span className="font-semibold tracking-tight text-lg">
             Chrono<span className="text-brand-400">Sync</span>
@@ -75,6 +74,7 @@ export function Header() {
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-base-950/90 backdrop-blur-md border-t border-base-800 flex items-center justify-around py-2 px-4 safe-area-inset-bottom">
         {NAV_ITEMS.map((item) => {
           const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+          const Icon = item.icon;
           return (
             <Link
               key={item.href}
@@ -84,6 +84,7 @@ export function Header() {
                 isActive ? "text-brand-400" : "text-base-500 hover:text-white"
               )}
             >
+              <Icon size={20} weight={isActive ? "fill" : "regular"} />
               {item.label}
             </Link>
           );

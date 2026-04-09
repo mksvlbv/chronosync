@@ -59,6 +59,12 @@ export async function deleteTimeEntry(id: string): Promise<void> {
   if (!res.ok) throw new Error("Failed to delete time entry");
 }
 
+export async function fetchRunningEntry(): Promise<TimeEntry | null> {
+  const res = await fetch(`${BASE}/running`);
+  if (!res.ok) throw new Error("Failed to fetch running entry");
+  return res.json();
+}
+
 export async function stopTimeEntry(id: string): Promise<TimeEntry> {
   const res = await fetch(`${BASE}/stop`, {
     method: "POST",

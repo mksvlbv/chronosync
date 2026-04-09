@@ -59,7 +59,7 @@ function EntryRow({ entry }: { entry: TimeEntry }) {
       </div>
 
       <div className="flex items-center justify-between sm:justify-end gap-6 sm:w-64 flex-shrink-0">
-        <div className="opacity-100 sm:opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
+        <div className="opacity-100 md:opacity-0 md:group-hover:opacity-100 flex items-center gap-1 transition-opacity">
           <button
             onClick={() => setIsEditing(true)}
             className="p-1.5 text-base-400 hover:text-white hover:bg-base-700 rounded-lg transition-colors"
@@ -83,7 +83,11 @@ function EntryRow({ entry }: { entry: TimeEntry }) {
         <span className="text-lg font-mono font-medium text-base-300">{formatDuration(duration)}</span>
 
         <button
-          onClick={() => continueEntry(entry)}
+          onClick={async () => {
+            await continueEntry(entry);
+            const { useEntriesStore: getEntries } = await import("@/store/entries-store");
+            getEntries.getState().loadToday();
+          }}
           className="w-8 h-8 rounded-full border border-base-700 flex items-center justify-center text-base-400 hover:text-brand-400 hover:border-brand-400 hover:bg-brand-500/10 transition-all flex-shrink-0 bg-base-900"
           title="Continue Task"
         >
