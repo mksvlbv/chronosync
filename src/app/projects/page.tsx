@@ -245,14 +245,16 @@ export default function ProjectsPage() {
               </div>
 
               {deleteConfirm === project.id && (
-                <div className="absolute inset-0 bg-base-900/95 backdrop-blur-sm rounded-xl flex items-center justify-center gap-4 p-6 z-10">
-                  <p className="text-white font-medium">Delete &quot;{project.name}&quot;?</p>
-                  <button onClick={() => setDeleteConfirm(null)} className="px-4 py-2 text-sm text-base-300 hover:bg-base-800 rounded-lg transition-colors">
-                    Cancel
-                  </button>
-                  <button onClick={() => handleDelete(project.id)} className="px-4 py-2 text-sm text-white bg-danger-500 hover:bg-danger-400 rounded-lg transition-colors">
-                    Delete
-                  </button>
+                <div className="absolute inset-0 bg-base-900/95 backdrop-blur-sm rounded-xl flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 p-4 sm:p-6 z-10">
+                  <p className="text-white font-medium text-center text-sm sm:text-base truncate max-w-[200px] sm:max-w-none">Delete &quot;{project.name}&quot;?</p>
+                  <div className="flex items-center gap-3">
+                    <button onClick={() => setDeleteConfirm(null)} className="px-4 py-2 text-sm text-base-300 hover:bg-base-800 rounded-lg transition-colors">
+                      Cancel
+                    </button>
+                    <button onClick={() => handleDelete(project.id)} className="px-4 py-2 text-sm text-white bg-danger-500 hover:bg-danger-400 rounded-lg transition-colors">
+                      Delete
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
