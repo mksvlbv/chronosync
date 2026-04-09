@@ -30,7 +30,7 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="w-full h-px bg-gradient-to-r from-transparent via-base-800 to-transparent my-8 opacity-50" />
+      <div className="w-full h-px bg-gradient-to-r from-transparent via-base-800 to-transparent my-12 sm:my-8 opacity-50" />
 
       <TimeEntryList />
     </div>
