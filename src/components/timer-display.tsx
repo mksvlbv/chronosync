@@ -66,7 +66,7 @@ export function TimerDisplay() {
             ) : (
               <Play size={24} weight="fill" />
             )}
-            <span>{isRunning ? "Stop Tracker" : "Start"}</span>
+            <span>{isRunning ? "Stop" : "Start"}</span>
           </span>
         </button>
 

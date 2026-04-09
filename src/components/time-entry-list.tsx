@@ -80,8 +80,7 @@ function EntryRow({ entry }: { entry: TimeEntry }) {
         <button
           onClick={async () => {
             await continueEntry(entry);
-            const { useEntriesStore: getEntries } = await import("@/store/entries-store");
-            getEntries.getState().loadToday();
+            useEntriesStore.getState().loadToday();
           }}
           className="w-8 h-8 rounded-full border border-base-700 flex items-center justify-center text-base-400 hover:text-brand-400 hover:border-brand-400 hover:bg-brand-500/10 transition-all flex-shrink-0 bg-base-900"
           title="Continue Task"

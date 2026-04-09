@@ -203,16 +203,16 @@ export default function ProjectsPage() {
           {projects.map((project) => (
             <div
               key={project.id}
-              className="group flex items-center justify-between p-4 bg-base-900/40 border border-base-800/80 rounded-xl hover:bg-base-800/40 hover:border-base-700 transition-all relative"
+              className="group flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 p-4 bg-base-900/40 border border-base-800/80 rounded-xl hover:bg-base-800/40 hover:border-base-700 transition-all relative"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 min-w-0">
                 <div
                   className="w-4 h-4 rounded-full flex-shrink-0"
                   style={{ backgroundColor: project.color, boxShadow: `0 0 8px ${project.color}80` }}
                 />
-                <div>
-                  <div className="flex items-center gap-3">
-                    <h3 className="font-medium text-lg text-base-200">{project.name}</h3>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h3 className="font-medium text-lg text-base-200 truncate">{project.name}</h3>
                     {project.client && (
                       <span className="text-xs px-2 py-0.5 rounded-md bg-base-800 text-base-400 border border-base-700">
                         {project.client}
@@ -221,7 +221,7 @@ export default function ProjectsPage() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-8">
+              <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-8 flex-shrink-0">
                 <div className="text-right">
                   <p className="text-xs text-base-400 mb-0.5">Total Tracked</p>
                   <p className="font-mono text-base-200 font-medium">{formatDurationShort(project.totalSeconds)}</p>

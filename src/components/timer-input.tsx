@@ -64,16 +64,16 @@ export function TimerInput() {
           type="text"
           value={taskDescription}
           onChange={(e) => setTaskDescription(e.target.value)}
-          onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+          onFocus={() => (suggestions.length > 0 || recentTasks.length > 0) && setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
           placeholder="What are you working on?"
           disabled={isRunning}
           className="w-full bg-transparent border-none outline-none text-xl lg:text-2xl text-white placeholder-base-400/70 font-light disabled:opacity-60 disabled:cursor-not-allowed"
         />
 
-        {showSuggestions && suggestions.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-base-900 border border-base-800 rounded-xl shadow-2xl overflow-hidden z-50">
-            {suggestions.map((s) => (
+        {showSuggestions && (suggestions.length > 0 || recentTasks.length > 0) && (
+          <div className="absolute top-full left-0 right-0 mt-2 bg-base-900 border border-base-800 rounded-xl shadow-2xl overflow-hidden z-50 max-h-72 overflow-y-auto">
+            {(suggestions.length > 0 ? suggestions : recentTasks).map((s) => (
               <button
                 key={s.id}
                 className="w-full flex items-center gap-3 px-4 py-3 hover:bg-base-800/50 transition-colors text-left"

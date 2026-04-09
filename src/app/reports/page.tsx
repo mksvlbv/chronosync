@@ -156,7 +156,7 @@ export default function ReportsPage() {
               <div className="flex gap-4">{[1,2,3].map(i=><div key={i} className="skeleton h-3 w-16" />)}</div>
             </div>
             <div className="flex items-end justify-between gap-4 h-48">
-              {[1,2,3,4,5,6,7].map(i=><div key={i} className="flex-1 flex flex-col items-center gap-2"><div className="skeleton w-full" style={{height:`${30+Math.random()*70}%`}} /><div className="skeleton h-3 w-8" /></div>)}
+              {[65,40,80,55,35,70,50].map((h,i)=><div key={i} className="flex-1 flex flex-col items-center gap-2"><div className="skeleton w-full" style={{height:`${h}%`}} /><div className="skeleton h-3 w-8" /></div>)}
             </div>
           </div>
           <div className="bg-base-900/40 border border-base-800 rounded-2xl p-8 flex flex-col gap-4">
