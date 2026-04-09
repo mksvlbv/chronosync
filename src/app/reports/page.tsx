@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { fetchReport, type ReportData } from "@/lib/api/reports";
 import { formatDuration, formatDurationShort, formatDateShort } from "@/lib/utils";
 import { addWeeks, subWeeks, addMonths, subMonths, addDays, subDays, format } from "date-fns";
+import { DownloadSimple, CaretLeft, CaretRight, ClockCountdown } from "@phosphor-icons/react";
 
 const PERIODS = ["Day", "Week", "Month"] as const;
 
@@ -110,9 +111,7 @@ export default function ReportsPage() {
           disabled={!report || report.entries.length === 0}
           className="flex items-center gap-2 px-4 py-2 bg-base-900 border border-base-800 rounded-lg text-sm font-medium text-white hover:bg-base-800 transition-all hover:border-base-700 disabled:opacity-50"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
+          <DownloadSimple size={18} />
           Export CSV
         </button>
       </div>
@@ -134,15 +133,11 @@ export default function ReportsPage() {
 
         <div className="flex items-center gap-3 px-4 py-1.5 text-sm font-medium text-base-400 bg-base-900 rounded-xl border border-base-800">
           <button onClick={() => navigate("prev")} className="hover:text-white transition-colors">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
+            <CaretLeft size={16} />
           </button>
           <span className="text-white">{dateLabel}</span>
           <button onClick={() => navigate("next")} className="hover:text-white transition-colors">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
+            <CaretRight size={16} />
           </button>
         </div>
       </div>
@@ -172,9 +167,7 @@ export default function ReportsPage() {
             <div className="bg-gradient-to-br from-base-900/80 to-base-950 border border-base-800 rounded-2xl p-8 flex flex-col justify-between">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center mb-4">
-                  <svg className="w-6 h-6 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <ClockCountdown size={24} className="text-brand-400" />
                 </div>
                 <h3 className="text-base-400 text-sm font-medium">Total Tracked</h3>
                 <div className="flex items-baseline gap-1 mt-2">

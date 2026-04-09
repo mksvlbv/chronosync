@@ -4,6 +4,7 @@ import { useTimerStore } from "@/store/timer-store";
 import { useEntriesStore } from "@/store/entries-store";
 import { formatDuration } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { Play, Stop } from "@phosphor-icons/react";
 
 export function TimerDisplay() {
   const { isRunning, seconds, start, stop, selectedProjectId } = useTimerStore();
@@ -61,11 +62,11 @@ export function TimerDisplay() {
         >
           <span className="relative z-10 flex items-center gap-2">
             {isRunning ? (
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+              <Stop size={24} weight="fill" />
             ) : (
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <Play size={24} weight="fill" />
             )}
-            <span>{isRunning ? "Stop Tracker" : "Start Tracker"}</span>
+            <span>{isRunning ? "Stop Tracker" : "Start"}</span>
           </span>
         </button>
 

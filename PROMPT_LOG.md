@@ -85,3 +85,27 @@ This document records every significant AI prompt used in developing ChronoSync,
 **Prompt:** Configure Prisma 7 with @prisma/adapter-pg for database connections. Update prisma.config.ts to use DIRECT_URL for migrations (bypassing pgbouncer) and DATABASE_URL with connection pooling for the application.
 **Outcome:** Working Prisma 7 setup with proper dual-URL configuration for Supabase's connection pooler architecture.
 **Reasoning:** Supabase uses pgbouncer for connection pooling (port 6543), which is incompatible with Prisma migrations. The DIRECT_URL (port 5432) bypasses pgbouncer for schema changes, while DATABASE_URL uses pooling for application queries.
+
+---
+
+## Session 5: Full Audit & Design Fidelity Pass
+
+### Prompt 12 — Comprehensive Audit (Round 1)
+**Context:** Post-deployment quality review against the original specification and Variant AI design references.
+**Prompt:** Conduct a full audit of the project: compare every component against the 6 HTML design references, check all functionality, responsive behavior, and compliance with the technical specification.
+**Outcome:** Identified 3 P0 critical bugs, 6 P1 UX issues, and 4 P2 polish items. Fixed all:
+- Timer persistence (restore running timer on page reload via `/api/time-entries/running` endpoint)
+- ContinueEntry refresh (entries list updates after restarting a task)
+- Mobile touch visibility (action buttons always visible on touch devices)
+- Bottom padding for mobile nav on all pages
+- Disabled timer input while running (prevents orphaned state changes)
+- Enter/Escape keyboard handling in project modal
+- Phosphor Icons in mobile navigation
+- Toast notification system for API error feedback
+**Reasoning:** Timer persistence is critical for a time-tracker — losing a running timer on page refresh is a data-integrity issue. The `/api/time-entries/running` endpoint queries for entries without `endTime`, enabling the client to restore state from the database.
+
+### Prompt 13 — Design Fidelity Audit (Round 2)
+**Context:** Pixel-level comparison against all 6 Variant AI HTML reference files.
+**Prompt:** Compare every component against the design references. Replace all inline SVGs with Phosphor Icons (as specified in the ТЗ), convert Projects page from card grid to list-row layout matching the reference, add "Recent:" task chips below the timer input.
+**Outcome:** Replaced all inline SVGs across 6 component files with `@phosphor-icons/react` components (ListPlus, CaretDown, Play, Stop, PencilSimple, Trash, ArrowRight, Clock, Plus, X, FolderDashed, DownloadSimple, CaretLeft, CaretRight, ClockCountdown). Rewrote Projects page layout from 3-column card grid to full-width list rows. Added "Recent:" quick-pick chips. Fixed button texts ("Start", "Add Project").
+**Reasoning:** The ТЗ explicitly requires `@phosphor-icons/react`. Inline SVGs, while functional, break consistency with the design system and add unnecessary bundle weight. The list-row layout for projects matches the reference exactly and provides better information density on desktop.

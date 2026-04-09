@@ -5,6 +5,7 @@ import { useEntriesStore } from "@/store/entries-store";
 import { useTimerStore } from "@/store/timer-store";
 import { formatDuration, formatTime, formatDate } from "@/lib/utils";
 import type { TimeEntry } from "@/lib/api/time-entries";
+import { PencilSimple, Trash, Play, ArrowRight, Clock } from "@phosphor-icons/react";
 
 function EntryRow({ entry }: { entry: TimeEntry }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -30,9 +31,7 @@ function EntryRow({ entry }: { entry: TimeEntry }) {
       <div className="flex items-start sm:items-center gap-4 sm:gap-8 flex-1">
         <div className="text-sm text-base-500 font-mono w-auto sm:w-36 flex-shrink-0 flex items-center gap-2 group-hover:text-base-400 transition-colors">
           {formatTime(new Date(entry.startTime))}
-          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
+          <ArrowRight size={12} />
           {entry.endTime ? formatTime(new Date(entry.endTime)) : "..."}
         </div>
 
@@ -65,18 +64,14 @@ function EntryRow({ entry }: { entry: TimeEntry }) {
             className="p-1.5 text-base-400 hover:text-white hover:bg-base-700 rounded-lg transition-colors"
             title="Edit"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
+            <PencilSimple size={18} />
           </button>
           <button
             onClick={handleDelete}
             className="p-1.5 text-base-400 hover:text-danger-400 hover:bg-danger-500/10 rounded-lg transition-colors"
             title="Delete"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
+            <Trash size={18} />
           </button>
         </div>
 
@@ -91,7 +86,7 @@ function EntryRow({ entry }: { entry: TimeEntry }) {
           className="w-8 h-8 rounded-full border border-base-700 flex items-center justify-center text-base-400 hover:text-brand-400 hover:border-brand-400 hover:bg-brand-500/10 transition-all flex-shrink-0 bg-base-900"
           title="Continue Task"
         >
-          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <Play size={14} weight="fill" />
         </button>
       </div>
     </div>
@@ -112,9 +107,7 @@ export function TimeEntryList() {
   if (entries.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-3">
-        <svg className="w-16 h-16 text-base-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+        <Clock size={64} className="text-base-700" />
         <p className="text-base-500 text-lg">No entries today</p>
         <p className="text-base-600 text-sm">Start tracking to see your work here</p>
       </div>

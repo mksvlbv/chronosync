@@ -5,6 +5,7 @@ import { useTimerStore } from "@/store/timer-store";
 import { useProjectsStore } from "@/store/projects-store";
 import { fetchTaskNames, type TaskName } from "@/lib/api/task-names";
 import { cn } from "@/lib/utils";
+import { ListPlus, CaretDown } from "@phosphor-icons/react";
 
 export function TimerInput() {
   const { taskDescription, setTaskDescription, selectedProjectId, setSelectedProjectId, isRunning } = useTimerStore();
@@ -15,6 +16,8 @@ export function TimerInput() {
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const [recentTasks, setRecentTasks] = useState<TaskName[]>([]);
+
   const selectedProject = projects.find((p) => p.id === selectedProjectId);
 
   useEffect(() => {
@@ -22,6 +25,10 @@ export function TimerInput() {
       setSelectedProjectId(projects[0].id);
     }
   }, [projects, selectedProjectId, setSelectedProjectId]);
+
+  useEffect(() => {
+    fetchTaskNames({}).then(setRecentTasks).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(async () => {
@@ -48,11 +55,10 @@ export function TimerInput() {
   }, []);
 
   return (
+    <>
     <div className="w-full max-w-3xl bg-base-900/80 backdrop-blur-xl border border-base-800 shadow-2xl rounded-2xl p-2 flex flex-col sm:flex-row items-center gap-2 focus-within:border-brand-500/50 focus-within:ring-1 focus-within:ring-brand-500/50 transition-all duration-300 relative z-20 group">
       <div className="flex-1 flex items-center w-full px-4 py-2 relative">
-        <svg className="w-5 h-5 text-base-400 mr-3 group-focus-within:text-brand-400 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-        </svg>
+        <ListPlus size={20} className="text-base-400 mr-3 group-focus-within:text-brand-400 transition-colors flex-shrink-0" />
         <input
           ref={inputRef}
           type="text"
@@ -107,9 +113,7 @@ export function TimerInput() {
               {selectedProject?.name || "Select project"}
             </span>
           </div>
-          <svg className="w-4 h-4 text-base-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
+          <CaretDown size={16} className="text-base-400" />
         </button>
 
         {showProjectDropdown && (
@@ -143,5 +147,27 @@ export function TimerInput() {
         )}
       </div>
     </div>
+
+    {!isRunning && !taskDescription && recentTasks.length > 0 && (
+      <div className="w-full max-w-3xl px-6 py-2 flex items-center gap-4 text-xs text-base-400 opacity-60">
+        <span>Recent:</span>
+        {recentTasks.slice(0, 3).map((t) => (
+          <button
+            key={t.id}
+            onClick={() => {
+              setTaskDescription(t.name);
+              if (t.projectId) setSelectedProjectId(t.projectId);
+            }}
+            className="hover:text-white transition-colors flex items-center gap-1"
+          >
+            {t.project && (
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: t.project.color }} />
+            )}
+            {t.name}
+          </button>
+        ))}
+      </div>
+    )}
+  </>
   );
 }
