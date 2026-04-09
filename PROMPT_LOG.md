@@ -121,3 +121,15 @@ This document records every significant AI prompt used in developing ChronoSync,
 **Prompt:** Remove unused `recharts` dependency (200KB dead weight). Create `.env.example` for repository onboarding. Un-ignore it in `.gitignore`. Verify `@types/pg` is present in devDependencies.
 **Outcome:** Removed `recharts` (37 packages), `.env.example` committed with `DATABASE_URL` and `DIRECT_URL` placeholders, `@types/pg` confirmed in devDependencies.
 **Reasoning:** Unused dependencies increase install time and bundle size. `.env.example` is essential for developer onboarding — without it, cloning the repo requires guessing environment variable names.
+
+### Prompt 16 — UI Bug Fixes (Responsive)
+**Context:** User-reported visual bugs on mobile: overlapping chart elements on Reports Day/Month, Start button overlapping input dropdown, missing 3rd bottom nav item, cramped chart legend, tight spacing between timer and entries.
+**Prompt:** Fix overlapping elements on Reports page (Day/Month chart overflow), dropdown z-index vs Start button, mobile bottom nav showing only 2 of 3 items, chart legend/title overlap on mobile, delete confirmation layout on narrow screens, and spacing between timer section and entries list.
+**Outcome:** Chart scrolls horizontally when >10 bars. Start button z-index lowered from z-20 to z-10. Added `overflow-x-hidden` on body and `overflow-x-clip` on timer page to prevent 800px glow element from creating horizontal scroll. Reports summary card becomes compact horizontal bar on mobile. Legend uses inline scrollable row. Delete confirmation stacks vertically on mobile. Divider margin increased.
+**Reasoning:** The 800px background glow element caused document-level horizontal overflow on mobile viewports, pushing the fixed bottom nav beyond the visible area. Each fix was minimal and scoped to the specific viewport breakpoint causing the issue.
+
+### Prompt 17 — Playwright E2E Audit
+**Context:** Manual bug discovery was unreliable. Automated testing needed to catch visual and functional regressions across all viewports.
+**Prompt:** Install Playwright, write comprehensive visual screenshot tests (every page × 3 viewports × all states) and functional E2E tests (timer lifecycle, project CRUD, entry editing, reports navigation, CSV export, keyboard shortcuts, responsive layout checks). Run all tests, review 46 screenshots, fix issues found.
+**Outcome:** 31 Playwright tests, all passing. 46 screenshots captured across Desktop (1440px), Tablet (768px), and Mobile (412px). Automated checks for: horizontal overflow, bottom nav visibility, dropdown z-index positioning, element spacing, title/legend overlap. Additional fixes: skeleton hydration (deterministic heights), fragile dynamic import, button text consistency ("Stop Tracker" → "Stop"), suggestions dropdown fallback to recent tasks.
+**Reasoning:** Automated visual regression testing catches layout issues that code review alone misses. Screenshot-based verification across three breakpoints ensures responsive correctness. Functional tests validate the full user journey and prevent regressions in CRUD operations.
