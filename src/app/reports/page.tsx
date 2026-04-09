@@ -167,15 +167,30 @@ export default function ReportsPage() {
         </div>
       ) : report ? (
         <>
+          {/* Summary bar — mobile compact, desktop hidden (shown in sidebar) */}
+          <div className="lg:hidden flex items-center justify-between gap-4 p-4 bg-base-900/40 border border-base-800 rounded-xl">
+            <div className="flex items-center gap-3">
+              <ClockCountdown size={20} className="text-brand-400" />
+              <div>
+                <p className="text-xs text-base-400">Total Tracked</p>
+                <p className="text-lg font-mono font-bold text-white">{formatDurationShort(report.totalSeconds)}</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-base-400">Daily Avg</p>
+              <p className="text-sm font-mono text-white">{formatDurationShort(report.dailyAverage)}</p>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div className="lg:col-span-3 bg-base-900/40 border border-base-800 rounded-2xl p-6 backdrop-blur-sm">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
-                <h3 className="font-semibold text-white flex-shrink-0">Time Distribution</h3>
-                <div className="flex items-center gap-x-4 gap-y-1 flex-wrap">
+            <div className="lg:col-span-3 bg-base-900/40 border border-base-800 rounded-2xl p-4 sm:p-6 backdrop-blur-sm">
+              <div className="flex items-center justify-between gap-2 mb-4 sm:mb-8">
+                <h3 className="font-semibold text-white text-sm sm:text-base flex-shrink-0">Time Distribution</h3>
+                <div className="flex items-center gap-3 overflow-x-auto scrollbar-none">
                   {report.byProject.map((p) => (
-                    <div key={p.projectId} className="flex items-center gap-2 text-xs text-base-400">
+                    <div key={p.projectId} className="flex items-center gap-1.5 text-[11px] text-base-400 whitespace-nowrap">
                       <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
-                      <span className="truncate">{p.name}</span>
+                      {p.name}
                     </div>
                   ))}
                 </div>
@@ -183,7 +198,8 @@ export default function ReportsPage() {
               <BarChart data={report.chartData} projects={report.byProject} />
             </div>
 
-            <div className="bg-gradient-to-br from-base-900/80 to-base-950 border border-base-800 rounded-2xl p-8 flex flex-col justify-between">
+            {/* Desktop sidebar — hidden on mobile (shown as bar above) */}
+            <div className="hidden lg:flex bg-gradient-to-br from-base-900/80 to-base-950 border border-base-800 rounded-2xl p-8 flex-col justify-between">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center mb-4">
                   <ClockCountdown size={24} className="text-brand-400" />
